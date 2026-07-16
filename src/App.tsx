@@ -16,9 +16,10 @@ function App() {
   ]
 
   const getIcon = (icon: string, isActive: boolean) => {
+    // Same color as text for active/inactive states
     const colorClass = isActive
-      ? 'text-[var(--color-forest-500)]'
-      : 'text-[var(--color-soil-400)] group-hover:text-[var(--color-forest-500)]'
+      ? 'text-[#1B4332] dark:text-[#95D5B2]'
+      : 'text-[#78716C] dark:text-[#A8A29E]'
 
     switch (icon) {
       case 'weather':
@@ -36,7 +37,7 @@ function App() {
       case 'chart':
         return (
           <svg className={`w-6 h-6 ${colorClass}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.75c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.75A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.75c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.75a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.75C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.75a1.125 1.125 0 01-1.125-1.125V4.125z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.75c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.75A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.75c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.75a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.75c.621 0 1.125.504 1.125 1.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.75a1.125 1.125 0 01-1.125-1.125V4.125z" />
           </svg>
         )
       case 'settings':
@@ -49,23 +50,23 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--color-cream-50)] dark:bg-[var(--color-loam-900)]">
+    <div className="min-h-screen flex flex-col bg-[#FEFAE0] dark:bg-[#1A1C14]">
       {/* Header */}
-      <header className="bg-white/80 dark:bg-[var(--color-loam-800)]/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-[var(--color-cream-200)] dark:border-[var(--color-loam-700)]">
+      <header className="bg-white dark:bg-[#283618] shadow-sm sticky top-0 z-50 border-b border-[#E8E2C9] dark:border-[#3A4A22]">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo / Brand */}
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-[var(--color-forest-700)] rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+              <div className="w-10 h-10 bg-[#1B4332] rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                 <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
                 </svg>
               </div>
               <div>
-                <h1 className="text-xl font-display font-bold text-[var(--color-forest-700)] dark:text-[var(--color-cream-50)] leading-tight">
+                <h1 className="text-xl font-display font-bold text-[#1B4332] dark:text-[#FEFAE0] leading-tight">
                   Canopy Watch
                 </h1>
-                <p className="text-xs text-[var(--color-soil-500)] dark:text-[var(--color-soil-400)]">
+                <p className="text-xs text-[#78716C] dark:text-[#A8A29E]">
                   Smart agriculture
                 </p>
               </div>
@@ -90,7 +91,7 @@ function App() {
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="bg-white/90 dark:bg-[var(--color-loam-800)]/90 backdrop-blur-md border-t border-[var(--color-cream-200)] dark:border-[var(--color-loam-700)] safe-area-pb">
+      <nav className="bg-white dark:bg-[#283618] border-t border-[#E8E2C9] dark:border-[#3A4A22] safe-area-pb">
         <div className="max-w-4xl mx-auto px-2">
           <div className="flex justify-around">
             {navItems.map((item) => {
@@ -101,12 +102,14 @@ function App() {
                   to={item.path}
                   className={`group flex flex-col items-center px-3 sm:px-4 py-3 rounded-xl transition-all min-w-[64px] ${
                     isActive
-                      ? 'text-[var(--color-forest-600)] dark:text-[var(--color-forest-300)]'
-                      : 'text-[var(--color-soil-400)] hover:text-[var(--color-forest-500)]'
+                      ? 'bg-[#D8F3DC] dark:bg-[#1B4332]'
+                      : 'hover:bg-[#F5F0D6] dark:hover:bg-[#3A4A22]'
                   }`}
                 >
                   {getIcon(item.icon, isActive)}
-                  <span className={`text-xs mt-1 font-medium ${isActive ? 'text-[var(--color-forest-600)] dark:text-[var(--color-forest-300)]' : ''}`}>
+                  <span className={`text-xs mt-1 font-medium ${isActive
+                    ? 'text-[#1B4332] dark:text-[#95D5B2]'
+                    : 'text-[#78716C] dark:text-[#A8A29E]'}`}>
                     {item.label}
                   </span>
                 </Link>
