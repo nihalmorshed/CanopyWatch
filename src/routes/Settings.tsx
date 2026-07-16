@@ -1,15 +1,42 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { storeLocation } from '@/lib/geolocation'
 
 function Settings() {
+  const navigate = useNavigate()
   const [lat, setLat] = useState('')
   const [lon, setLon] = useState('')
   const [units, setUnits] = useState<'metric' | 'imperial'>('metric')
   const [lang, setLang] = useState<'en' | 'sw'>('en')
 
+  // Load saved settings on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('weatherai_settings')
+    if (saved) {
+      const settings = JSON.parse(saved)
+      setLat(settings.lat || '')
+      setLon(settings.lon || '')
+      setUnits(settings.units || 'metric')
+      setLang(settings.lang || 'en')
+    }
+  }, [])
+
   const handleSave = () => {
-    // Save to localStorage
-    localStorage.setItem('weatherai_settings', JSON.stringify({ lat, lon, units, lang }))
+    const settings = { lat, lon, units, lang }
+    localStorage.setItem('weatherai_settings', JSON.stringify(settings))
+
+    // If valid coordinates, also update the location for weather
+    if (lat && lon) {
+      const latNum = parseFloat(lat)
+      const lonNum = parseFloat(lon)
+      if (!isNaN(latNum) && !isNaN(lonNum)) {
+        const location = { lat: latNum, lon: lonNum, name: 'Custom Location' }
+        storeLocation(location)
+      }
+    }
+
     alert('Settings saved!')
+    navigate('/')
   }
 
   return (

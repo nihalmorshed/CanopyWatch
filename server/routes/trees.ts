@@ -1,22 +1,39 @@
 import { Router } from 'express'
-import { weatherAiGet, weatherAiPost } from '../weatherAiClient'
+import multer from 'multer'
+import { weatherAiPost, weatherAiGet } from '../weatherAiClient'
 import FormData from 'form-data'
 
 const router = Router()
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 20 * 1024 * 1024, // 20MB - match client-side limit
+  },
+  fileFilter: (_req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true)
+    } else {
+      cb(new Error('Invalid file type. Only JPEG, PNG, and WebP are allowed.'))
+    }
+  },
+})
 
 // POST /api/trees/analyze - Analyze tree canopy from image
-router.post('/trees/analyze', async (req, res) => {
+router.post('/trees/analyze', upload.single('image'), async (req, res) => {
   try {
-    const { farmerId, county, landAcres, location, notes } = req.body
-
-    // Handle multipart upload
-    if (!req.body.image) {
+    if (!req.file) {
       res.status(400).json({ error: 'Image is required' })
       return
     }
 
+    const { farmerId, county, landAcres, location, notes } = req.body
+
     const formData = new FormData()
-    formData.append('image', req.body.image)
+    formData.append('image', req.file.buffer, {
+      filename: req.file.originalname,
+      contentType: req.file.mimetype,
+    })
     if (farmerId) formData.append('farmerId', farmerId)
     if (county) formData.append('county', county)
     if (landAcres) formData.append('landAcres', String(landAcres))
@@ -26,6 +43,7 @@ router.post('/trees/analyze', async (req, res) => {
     const data = await weatherAiPost('/v1/trees/analyze', formData, true)
     res.json(data)
   } catch (error) {
+    console.error('Tree analysis error:', error)
     res.status(500).json({ error: (error as Error).message })
   }
 })

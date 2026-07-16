@@ -1,5 +1,7 @@
+import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
+import path from 'path'
 import weatherRoutes from './routes/weather'
 import treesRoutes from './routes/trees'
 import usageRoutes from './routes/usage'
@@ -21,6 +23,18 @@ app.get('/api/health', (_req, res) => {
 app.use('/api', weatherRoutes)
 app.use('/api', treesRoutes)
 app.use('/api', usageRoutes)
+
+// Serve static files in production
+const isProduction = process.env.NODE_ENV === 'production'
+if (isProduction) {
+  const staticPath = path.join(__dirname, '../dist')
+  app.use(express.static(staticPath))
+
+  // Handle React Router - serve index.html for all non-API routes
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(staticPath, 'index.html'))
+  })
+}
 
 // Error handler
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
